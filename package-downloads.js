@@ -2,7 +2,6 @@
 
 // `https://api.npmjs.org/downloads/point/${year}-01-01:${year}-12-31/${framework}`
 const baseURL = 'https://api.npmjs.org/downloads/point';
-const year = 2022;
 
 async function getModuleDownloadStats (refArchPackages) {
   // Array to hold all the pacakge download data

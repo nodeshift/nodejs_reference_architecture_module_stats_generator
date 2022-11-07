@@ -1,10 +1,14 @@
 'use strict';
 
-const refArchModules = require('./modules.json');
 const packageDownloads = require('./package-downloads');
 const pacakgeMetadata = require('./packument-metadata');
 
 async function run() {
+  // Get the list of modules from the reference architecture repo
+  // https://raw.githubusercontent.com/nodeshift/nodejs-reference-architecture/main/npcheck.json
+  const reponse = await fetch('https://raw.githubusercontent.com/nodeshift/nodejs-reference-architecture/main/npcheck.json');
+  const refArchModules = await reponse.json();
+
   // Get the downloads for the module list
   const moduleDownloads = await packageDownloads(refArchModules.modules);
 
@@ -20,7 +24,10 @@ async function run() {
     return {...obj, ...foundDownloadStat};
   });
 
-  console.log(mapped);
+  // output the list
+  mapped.forEach((val) => {
+    console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val['dist-tags']?.latest} Modified: ${val.time?.modified}`);
+  })
 }
 
 run();
