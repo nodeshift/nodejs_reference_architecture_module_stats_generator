@@ -5,6 +5,22 @@ const outputToCSV = require('./outputs/csv');
 const packageDownloads = require('./package-downloads');
 const pacakgeMetadata = require('./packument-metadata');
 
+function parseModuleType(type) {
+  // Figure out if this is an ESM or CJS module or both
+  // TODO: figure out logic for both and how to check if it is an .mjs
+  if (type === 'module') {
+    return 'ESM';
+  }
+
+  return 'CJS';
+}
+
+function parseRepository(repository) {
+  // Find the source control link
+  // TODO: Should be more better than this
+  return repository.url;
+}
+
 async function run() {
   // Get the list of modules from the reference architecture repo
   // https://raw.githubusercontent.com/nodeshift/nodejs-reference-architecture/main/npcheck.json
@@ -31,19 +47,19 @@ async function run() {
       name: obj.name,
       description: obj.description,
       modified: obj.time.modified,
-      type: latestVersionInfo.type,
-      // repository: obj.repository,
+      type: parseModuleType(latestVersionInfo.type),
+      repository: parseRepository(obj.repository),
       latestVersion,
-      // latestVersionInfo,
+      latestVersionInfo,
       ...foundDownloadStat
     };
   });
 
   // output the list
-  mapped.forEach((val) => {
-    console.log(val);
-  //  console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val.latestVersion} Module type: ${val.type} Modified: ${val.modified}`);
-  })
+  // mapped.forEach((val) => {
+  //   // console.log(val);
+  // //  console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val.latestVersion} Module type: ${val.type} Modified: ${val.modified}`);
+  // })
 
   outputToCSV(mapped);
 }
