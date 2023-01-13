@@ -39,6 +39,14 @@ function createFields() {
 		{
 			label: 'What Does It Do',
 			value: 'description'
+		},
+		{
+			label: 'npm Link',
+			value: 'npmlink'
+		},
+		{
+			label: 'Git Link',
+			value: 'repository'
 		}
 	];
 

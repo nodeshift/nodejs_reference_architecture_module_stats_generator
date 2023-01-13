@@ -13,7 +13,8 @@ async function getPackumentData(refArchPackages) {
   for (const refArchPackage of refArchPackages) {
     // for each module, find the stats
     const response = await fetch(`${baseURL}/${refArchPackage.name}`);
-    const packumentData = await response.json()
+    let packumentData = await response.json();
+    packumentData = { ...refArchPackage, ...packumentData };
     packumentMetadatas.push(packumentData);
   }
 
