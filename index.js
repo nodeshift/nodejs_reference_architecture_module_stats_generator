@@ -1,5 +1,7 @@
 'use strict';
 
+const outputToCSV = require('./outputs/csv');
+
 const packageDownloads = require('./package-downloads');
 const pacakgeMetadata = require('./packument-metadata');
 
@@ -21,13 +23,29 @@ async function run() {
       return obj._id === stat.package;
     });
 
-    return {...obj, ...foundDownloadStat};
+    // Need to only provide the stuff we need
+    const latestVersion = obj['dist-tags'].latest;
+    const latestVersionInfo = obj.versions[latestVersion];
+
+    return {
+      name: obj.name,
+      description: obj.description,
+      modified: obj.time.modified,
+      type: latestVersionInfo.type,
+      // repository: obj.repository,
+      latestVersion,
+      // latestVersionInfo,
+      ...foundDownloadStat
+    };
   });
 
   // output the list
   mapped.forEach((val) => {
-    console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val['dist-tags']?.latest} Modified: ${val.time?.modified}`);
+    console.log(val);
+  //  console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val.latestVersion} Module type: ${val.type} Modified: ${val.modified}`);
   })
+
+  outputToCSV(mapped);
 }
 
 run();
