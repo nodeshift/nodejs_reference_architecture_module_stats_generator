@@ -3,6 +3,7 @@
 const fs = require('fs/promises');
 
 const { Parser } = require('@json2csv/plainjs');
+const { flatten } = require('@json2csv/transforms');
 
 // Module	Review Level	Activity Level (current)	Activity Level (target)	Product Dependencies	Download Stats	ESM/CJS	Foundation Supported	What Does it Do	Section	npm link	github link
 
@@ -11,6 +12,18 @@ function createFields() {
 		{
 			label: 'Module',
 			value: 'name'
+		},
+		{
+			label: 'Review Level',
+			value: 'reviewlevel'
+		},
+		{
+			label: 'Activity Level(current)',
+			value: 'activitycurrent'
+		},
+		{
+			label: 'Activity Level(target)',
+			value: 'activitytarget'
 		},
 		{
 			label: 'ESM/CJS',
@@ -37,8 +50,16 @@ function createFields() {
 			value: 'modified'
 		},
 		{
+			label: 'Foundation Supported',
+			value: 'foundation'
+		},
+		{
 			label: 'What Does It Do',
 			value: 'description'
+		},
+		{
+			label: 'Section',
+			value: 'section'
 		},
 		{
 			label: 'npm Link',
@@ -57,6 +78,9 @@ async function createCSV(data) {
 // Set fields for the csv
 
 	const opts = {
+		transforms: [
+			flatten({ object: false, array: true, separator: ', '}),
+		],
 	  fields: createFields()
 	};
 

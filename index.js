@@ -45,6 +45,11 @@ async function run() {
 
     return {
       name: obj.name,
+      reviewlevel: obj.reviewlevel,
+      activitycurrent: obj.activitycurrent,
+      activitytarget: obj.activitytarget,
+      foundation: obj.foundation,
+      section: obj.section,
       npmlink: obj.npmlink || obj.npmLink,
       description: obj.description,
       modified: obj.time.modified,
@@ -58,7 +63,7 @@ async function run() {
 
   // output the list
   // mapped.forEach((val) => {
-  //   // console.log(val);
+  //   console.log(val);
   // //  console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val.latestVersion} Module type: ${val.type} Modified: ${val.modified}`);
   // })
 
