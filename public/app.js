@@ -1,10 +1,3 @@
-'use strict';
-
-const outputToCSV = require('./outputs/csv');
-
-const packageDownloads = require('./src/package-downloads');
-const packageMetadata = require('./src/packument-metadata');
-
 function parseModuleType(type) {
   // Figure out if this is an ESM or CJS module or both
   // TODO: figure out logic for both and how to check if it is an .mjs
@@ -21,17 +14,17 @@ function parseRepository(repository) {
   return repository.url;
 }
 
-async function run() {
+async function app() {
   // Get the list of modules from the reference architecture repo
   // https://raw.githubusercontent.com/nodeshift/nodejs-reference-architecture/main/npcheck.json
   const response = await fetch('https://raw.githubusercontent.com/nodeshift/nodejs-reference-architecture/main/npcheck.json');
   const refArchModules = await response.json();
 
   // Get the downloads for the module list
-  const moduleDownloads = await packageDownloads(refArchModules.modules);
+  const moduleDownloads = await getModuleDownloadStats(refArchModules.modules);
 
   // Get the pacakge metadata for the module list
-  const packageMetadatas = await packageMetadata(refArchModules.modules);
+  const packageMetadatas = await getPackumentData(refArchModules.modules);
 
   const mapped = packageMetadatas.map((obj) => {
     // based on the object _id, find the package in the downloads array and add it to this obj and return
@@ -61,13 +54,10 @@ async function run() {
     };
   });
 
-  // output the list
-  // mapped.forEach((val) => {
-  //   console.log(val);
-  // //  console.log(`Package: ${val.name} Downloads: ${val.downloads} Description: ${val.description} Latest: ${val.latestVersion} Module type: ${val.type} Modified: ${val.modified}`);
-  // })
+  //Add the download run date values
+  document.querySelector('#runDate').innerHTML = `Download Numbers are from ${mapped[0].start} to ${mapped[0].end}`
+  createTableHeader();
+  createTableRows(mapped);
+};
 
-  outputToCSV(mapped);
-}
-
-run();
+app();
